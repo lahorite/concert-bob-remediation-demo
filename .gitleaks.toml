@@ -1,0 +1,23 @@
+# Gitleaks configuration, picked up automatically from the scan target root.
+# Keeps every default rule (including generic-api-key) enabled and only skips
+# local tooling and generated directories by path. No rule or individual
+# finding is suppressed. Application files and .env files remain in scope.
+#
+# Scope: secret scanning (Gitleaks) only. It does not affect Trivy package
+# scans, dependency audits, or application behavior.
+# Status: verified with a direct gitleaks run only. Secure Coder verification
+# is still pending (its scanner connection was unavailable when this was added).
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Local virtual environments, caches, and generated scan output"
+paths = [
+  '''(^|[\\/])\.venv(-[^\\/]*)?[\\/]''',
+  '''(^|[\\/])venv[\\/]''',
+  '''(^|[\\/])__pycache__[\\/]''',
+  '''(^|[\\/])\.pytest_cache[\\/]''',
+  '''(^|[\\/])scan-output[\\/]''',
+  '''(^|[\\/])scan-artifacts[\\/]''',
+]
