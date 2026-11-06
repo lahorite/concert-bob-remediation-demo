@@ -2,8 +2,8 @@
 
 A small Flask task tracker used as a baseline for an IBM Bob + IBM Concert dependency remediation demonstration.
 
-> **WARNING: intentionally vulnerable dependencies.**
-> `requirements.txt` deliberately pins old versions (`Flask==3.0.2`, `Werkzeug==3.0.2`, `requests==2.31.0`) that have known published advisories. This is for a software composition analysis (SCA) demo. **Do not deploy this application.** An affected dependency version does not by itself mean the application is exploitable. See [`docs/demo-plan.md`](docs/demo-plan.md).
+> **Demo repository.** The tag [`vulnerable-baseline`](../../tree/vulnerable-baseline) is an **intentionally vulnerable** baseline that pins old versions (`Flask==3.0.2`, `Werkzeug==3.0.2`, `requests==2.31.0`) with known published advisories, for a software composition analysis (SCA) demo. **Do not deploy that tag.**
+> `main` carries the remediated pins (`Flask==3.1.3`, `Werkzeug==3.1.9`, `requests==2.34.2`). An affected dependency version does not by itself mean the application is exploitable. See [`docs/demo-plan.md`](docs/demo-plan.md).
 
 ## Features
 
@@ -45,21 +45,22 @@ Tests use a temporary database and never touch `tasks.db`.
 
 | File | Purpose |
 | --- | --- |
-| `requirements.txt` | Intentionally old baseline pins (runtime) |
+| `requirements.txt` | Runtime pins (remediated on `main`; old pins at the `vulnerable-baseline` tag) |
 | `requirements-dev.txt` | Runtime plus test tooling (pytest) |
-| `requirements.lock.txt` | Resolved runtime dependency set at baseline |
+| `requirements.lock.txt` | Resolved runtime dependency set (regenerated after remediation) |
 | `docs/demo-plan.md` | Demo workflow |
 
 ## Dependency audit
 
-Keep scanners in a separate environment from the app:
+Keep scanners in a separate environment outside the project folder, so workspace secret scans do not pick up third-party scanner packages:
 
 ```powershell
-py -3.12 -m venv .venv-scan
-.\.venv-scan\Scripts\python.exe -m pip install pip-audit
+$scan = "$HOME\Documents\scanner-tools\concert-demo"
+py -3.12 -m venv $scan
+& "$scan\Scripts\python.exe" -m pip install pip-audit==2.10.1
 py -3.12 -m venv .venv-runtime
 .\.venv-runtime\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv-scan\Scripts\pip-audit.exe --path .\.venv-runtime\Lib\site-packages -f json -o scan-output\pip-audit-report.json
+& "$scan\Scripts\pip-audit.exe" --path .\.venv-runtime\Lib\site-packages -f json -o scan-output\pip-audit-report.json
 ```
 
-`pip-audit` exits non-zero when vulnerabilities are found. That is expected for this baseline. Scan output is git-ignored.
+`pip-audit` exits non-zero when vulnerabilities are found. On the `vulnerable-baseline` tag that is expected. On `main` it should report no findings for the app's packages. Scan output is git-ignored.
