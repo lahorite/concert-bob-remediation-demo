@@ -36,4 +36,3 @@ pip-audit-report*.json
 .venv-runtime/
 .venv-fixed/
 .venv-runtime-fixed/
-secure-coder-all-findings-*.json
