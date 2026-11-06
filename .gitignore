@@ -1,0 +1,36 @@
+# Virtual environments (app and scanner)
+.venv/
+.venv-scan/
+venv/
+env/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated scan output
+scan-output/
+*.sarif
+*-audit*.json
+pip-audit-report*.json
+
+# Tooling / IDE
+.bob/
+.cursor/
+.vscode/
+.venv-runtime/

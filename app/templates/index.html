@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <h1>Task Tracker</h1>
+    <p class="subtitle">Demo application with synthetic data.</p>
+
+    <form class="add-form" method="post" action="{{ url_for('tasks.add_task') }}">
+      <label class="visually-hidden" for="title">New task</label>
+      <input id="title" name="title" type="text" maxlength="200" placeholder="Add a new task" required>
+      <button type="submit" class="btn primary">Add</button>
+    </form>
+
+    {% if tasks %}
+    <ul class="task-list">
+      {% for task in tasks %}
+      <li class="task{% if task['completed'] %} done{% endif %}">
+        <span class="title">{{ task['title'] }}</span>
+        <span class="actions">
+          {% if not task['completed'] %}
+          <form method="post" action="{{ url_for('tasks.complete_task', task_id=task['id']) }}">
+            <button type="submit" class="btn">Complete</button>
+          </form>
+          {% endif %}
+          <form method="post" action="{{ url_for('tasks.delete_task', task_id=task['id']) }}">
+            <button type="submit" class="btn danger">Delete</button>
+          </form>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">No tasks yet. Add one above.</p>
+    {% endif %}
+  </main>
+</body>
+</html>
