@@ -52,14 +52,15 @@ Tests use a temporary database and never touch `tasks.db`.
 
 ## Dependency audit
 
-Keep scanners in a separate environment from the app:
+Keep scanners in a separate environment outside the project folder, so workspace secret scans do not pick up third-party scanner packages:
 
 ```powershell
-py -3.12 -m venv .venv-scan
-.\.venv-scan\Scripts\python.exe -m pip install pip-audit
+$scan = "$HOME\Documents\scanner-tools\concert-demo"
+py -3.12 -m venv $scan
+& "$scan\Scripts\python.exe" -m pip install pip-audit==2.10.1
 py -3.12 -m venv .venv-runtime
 .\.venv-runtime\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv-scan\Scripts\pip-audit.exe --path .\.venv-runtime\Lib\site-packages -f json -o scan-output\pip-audit-report.json
+& "$scan\Scripts\pip-audit.exe" --path .\.venv-runtime\Lib\site-packages -f json -o scan-output\pip-audit-report.json
 ```
 
-`pip-audit` exits non-zero when vulnerabilities are found. That is expected for this baseline. Scan output is git-ignored.
+`pip-audit` exits non-zero when vulnerabilities are found. On the `vulnerable-baseline` tag that is expected. On `main` it should report no findings for the app's packages. Scan output is git-ignored.
