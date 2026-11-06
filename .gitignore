@@ -34,3 +34,5 @@ pip-audit-report*.json
 .cursor/
 .vscode/
 .venv-runtime/
+.venv-fixed/
+.venv-runtime-fixed/
